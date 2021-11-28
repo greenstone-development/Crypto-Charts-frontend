@@ -8,7 +8,7 @@ import Gallery from "./Gallery";
 // Constants
 const TWITTER_HANDLE = "CryptoChartsPLACEHOLDER";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
-// ENS name resolves to 0x6aA98e3eFaDE04b250296F4a7cd7c87FfFF81121
+// ENS name resolves to 0x0c2ec7b80a8b6c39343dabc0c6ef9e214fceefdc
 export const CONTRACT_ADDRESS = "cryptocharts.test";
 const OPENSEA_URL = "https://testnets.opensea.io/assets/cryptocharts-v2";
 
