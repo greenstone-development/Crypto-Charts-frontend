@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 
 import "./styles/App.css";
 import cryptoChartsArtifact from "./utils/CryptoCharts.json";
-import Gallery from "./Gallery.jsx";
+import Gallery from "./Gallery";
 
 // Constants
 const TWITTER_HANDLE = "CryptoChartsPLACEHOLDER";
@@ -13,10 +13,10 @@ export const CONTRACT_ADDRESS = "cryptocharts.test";
 const OPENSEA_URL = "https://testnets.opensea.io/assets/cryptocharts-v2";
 
 // TODO: Reuse providers/contract when MetaMask is available?
-let provider;
-let connectedContract;
+// let provider;
+// let connectedContract;
 
-const App = () => {
+function App() {
   useEffect(() => {
     checkIfWalletIsConnected();
     getQuantities(); // TODO: Incorrect use of useEffect?
@@ -29,7 +29,7 @@ const App = () => {
 
   const isConnectedToRinkeby = async () => {
     const chainId = await window.ethereum.request({ method: "eth_chainId" });
-    console.log("Connected to chain " + chainId);
+    console.log(`Connected to chain ${chainId}`);
     if (chainId !== "0x4") {
       alert("You are not connected to the Rinkeby Test Network!");
       return false;
@@ -65,7 +65,7 @@ const App = () => {
       }
 
       const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts"
+        method: "eth_requestAccounts",
       });
       console.log("Connected", accounts[0]);
 
@@ -83,9 +83,10 @@ const App = () => {
       cryptoChartsArtifact.abi,
       provider
     );
-    const totalSupply = connectedContract.totalSupply();
-    const totalMinted = connectedContract.totalMinted();
-    const stats = await Promise.all([totalSupply, totalMinted]);
+    const stats = await Promise.all([
+      connectedContract.totalSupply(),
+      connectedContract.totalMinted(),
+    ]);
 
     setTotalSupply(ethers.BigNumber.from(stats[0]).toNumber());
     setTotalMinted(ethers.BigNumber.from(stats[1]).toNumber());
@@ -161,6 +162,7 @@ const App = () => {
     <button
       className="cta-button connect-wallet-button"
       onClick={connectWallet}
+      type="button"
     >
       Connect to Wallet
     </button>
@@ -172,30 +174,34 @@ const App = () => {
         <button
           onClick={askContractToMintNft}
           className="cta-button connect-wallet-button"
+          type="button"
         >
           Mint NFT
         </button>
       );
     }
     return (
-      <button disabled className="cta-button connect-wallet-button">
+      <button
+        disabled
+        className="cta-button connect-wallet-button"
+        type="button"
+      >
         Processing...
       </button>
     );
   };
 
-  const renderViewCollectionButton = () => {
-    return (
-      <button
-        onClick={() => {
-          window.open(OPENSEA_URL, "_blank");
-        }}
-        className="cta-button view-collection-button"
-      >
-        🌊 View Collection on OpenSea
-      </button>
-    );
-  };
+  const renderViewCollectionButton = () => (
+    <button
+      onClick={() => {
+        window.open(OPENSEA_URL, "_blank");
+      }}
+      className="cta-button view-collection-button"
+      type="button"
+    >
+      🌊 View Collection on OpenSea
+    </button>
+  );
 
   const renderQuantities = () => {
     const plural = totalMinted === 1 ? "chart has" : "charts have";
@@ -230,11 +236,13 @@ const App = () => {
             href={TWITTER_LINK}
             target="_blank"
             rel="noreferrer"
-          >{`built on @${TWITTER_HANDLE}`}</a>
+          >
+            {`built on @${TWITTER_HANDLE}`}
+          </a>
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default App;
