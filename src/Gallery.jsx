@@ -11,7 +11,7 @@ import { ethers } from "ethers";
 import axios from "axios";
 import cryptoChartsArtifact from "./utils/CryptoCharts.json";
 
-const CONTRACT_ADDRESS = "0x8E100E3Fe73B6bEe5b298E8BAeEE8FDe6d96AC41";
+const CONTRACT_ADDRESS = "cryptocharts.test";
 
 let provider;
 let signer;

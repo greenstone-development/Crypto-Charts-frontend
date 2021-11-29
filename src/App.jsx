@@ -7,8 +7,8 @@ import Gallery from "./Gallery";
 
 // Constants
 // ENS name resolves to 0x0c2ec7b80a8b6c39343dabc0c6ef9e214fceefdc
-const CONTRACT_ADDRESS = "0x8E100E3Fe73B6bEe5b298E8BAeEE8FDe6d96AC41";
-const OPENSEA_URL = "https://testnets.opensea.io/collection/cryptocharts-v2";
+const CONTRACT_ADDRESS = "cryptocharts.test";
+const OPENSEA_URL = "https://testnets.opensea.io/collection/cryptocharts-v4";
 
 // TODO: Reuse providers/contract when MetaMask is available?
 // let provider;
