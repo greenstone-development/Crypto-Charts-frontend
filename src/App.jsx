@@ -95,6 +95,11 @@ function App() {
   };
 
   const getQuantities = async () => {
+    const { ethereum } = window;
+    if (!ethereum) {
+      alert("Get MetaMask!");
+      return;
+    }
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const connectedContract = new ethers.Contract(
       CONTRACT_ADDRESS,
@@ -214,7 +219,7 @@ function App() {
       <div className="container">
         <div className="header-container">
           <p className="header gradient-text">CryptoCharts</p>
-          <p className="sub-text">Add witty description here</p>
+          <p className="sub-text">An NFT collection of ETH/USD price charts.</p>
           {renderQuantities()}
           {/* <div>
             {currentAccount === ""

@@ -13,13 +13,21 @@ import cryptoChartsArtifact from "./utils/CryptoCharts.json";
 
 const CONTRACT_ADDRESS = "0x8E100E3Fe73B6bEe5b298E8BAeEE8FDe6d96AC41";
 
-const provider = new ethers.providers.Web3Provider(window.ethereum);
-const signer = provider.getSigner();
-const connectedContract = new ethers.Contract(
-  CONTRACT_ADDRESS,
-  cryptoChartsArtifact.abi,
-  provider
-);
+let provider;
+let signer;
+let connectedContract;
+
+// TODO: Clean up
+const { ethereum } = window;
+if (ethereum) {
+  provider = new ethers.providers.Web3Provider(window.ethereum);
+  signer = provider.getSigner();
+  connectedContract = new ethers.Contract(
+    CONTRACT_ADDRESS,
+    cryptoChartsArtifact.abi,
+    provider
+  );
+}
 
 export default function Gallery({ connectWallet }) {
   const [charts, setCharts] = useState([]);
@@ -30,6 +38,11 @@ export default function Gallery({ connectWallet }) {
     ipfsLink.replace("ipfs://", "https://ipfs.io/ipfs/");
 
   const getChartMetadata = async () => {
+    const { ethereum } = window;
+    if (!ethereum) {
+      return;
+    }
+
     // Get IPFS URLs from contract and format links to http.
     const pendingIpfsLinks = [];
     const totalSupply = await connectedContract.totalSupply();
