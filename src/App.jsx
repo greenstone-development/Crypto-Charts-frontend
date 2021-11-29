@@ -9,7 +9,7 @@ import Gallery from "./Gallery";
 const TWITTER_HANDLE = "CryptoChartsPLACEHOLDER";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 // ENS name resolves to 0x0c2ec7b80a8b6c39343dabc0c6ef9e214fceefdc
-export const CONTRACT_ADDRESS = "cryptocharts.test";
+const CONTRACT_ADDRESS = "cryptocharts.test";
 const OPENSEA_URL = "https://testnets.opensea.io/assets/cryptocharts-v2";
 
 // TODO: Reuse providers/contract when MetaMask is available?
@@ -17,11 +17,6 @@ const OPENSEA_URL = "https://testnets.opensea.io/assets/cryptocharts-v2";
 // let connectedContract;
 
 function App() {
-  useEffect(() => {
-    checkIfWalletIsConnected();
-    getQuantities(); // TODO: Incorrect use of useEffect?
-  }, []);
-
   const [currentAccount, setCurrentAccount] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [totalSupply, setTotalSupply] = useState(0);
@@ -35,6 +30,31 @@ function App() {
       return false;
     }
     return true;
+  };
+
+  const setupEventListener = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const connectedContract = new ethers.Contract(
+          CONTRACT_ADDRESS,
+          cryptoChartsArtifact.abi,
+          signer
+        );
+
+        connectedContract.on("ChartMinted", (buyer, tokenId) => {
+          console.log(buyer, tokenId.toNumber());
+        });
+        console.log("Setup event listener!");
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const checkIfWalletIsConnected = async () => {
@@ -92,7 +112,7 @@ function App() {
     setTotalMinted(ethers.BigNumber.from(stats[1]).toNumber());
   };
 
-  const askContractToMintNft = async () => {
+  const askContractToMintNft = async (tokenId) => {
     setIsProcessing(true);
     try {
       const { ethereum } = window;
@@ -112,7 +132,7 @@ function App() {
         );
 
         console.log("Prompting for gas payment...");
-        const nftTxn = await connectedContract.makeAnEpicNFT();
+        const nftTxn = await connectedContract.mintChart(tokenId);
 
         console.log("Mining...please wait.");
         await nftTxn.wait();
@@ -127,34 +147,6 @@ function App() {
       console.log(error);
     }
     setIsProcessing(false);
-  };
-
-  const setupEventListener = async () => {
-    try {
-      const { ethereum } = window;
-
-      if (ethereum) {
-        const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const connectedContract = new ethers.Contract(
-          CONTRACT_ADDRESS,
-          cryptoChartsArtifact.abi,
-          signer
-        );
-
-        connectedContract.on("ChartMinted", (buyer, tokenId) => {
-          console.log(buyer, tokenId.toNumber());
-          alert(
-            `Hey there! We've minted your NFT and sent it to your wallet. It may be blank right now. It can take a max of 10 min to show up on OpenSea. Here's the link: https://testnets.opensea.io/assets/${CONTRACT_ADDRESS}/${tokenId.toNumber()}`
-          );
-        });
-        console.log("Setup event listener!");
-      } else {
-        console.log("Ethereum object doesn't exist!");
-      }
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   // Render Methods
@@ -213,6 +205,12 @@ function App() {
       </p>
     );
   };
+
+  useEffect(async () => {
+    await checkIfWalletIsConnected();
+    await getQuantities(); // TODO: Incorrect use of useEffect?
+  }, []);
+
   return (
     <div className="App">
       <div className="container">

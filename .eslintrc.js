@@ -21,5 +21,6 @@ module.exports = {
         namedComponents: "function-declaration",
       },
     ],
+    "react/jsx-filename-extension": [0],
   },
 };
