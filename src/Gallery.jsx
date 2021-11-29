@@ -11,7 +11,7 @@ import { ethers } from "ethers";
 import axios from "axios";
 import cryptoChartsArtifact from "./utils/CryptoCharts.json";
 
-const CONTRACT_ADDRESS = "cryptocharts.test";
+const CONTRACT_ADDRESS = "0x8E100E3Fe73B6bEe5b298E8BAeEE8FDe6d96AC41";
 
 const provider = new ethers.providers.Web3Provider(window.ethereum);
 const signer = provider.getSigner();
@@ -21,7 +21,7 @@ const connectedContract = new ethers.Contract(
   provider
 );
 
-export default function Gallery() {
+export default function Gallery({ connectWallet }) {
   const [charts, setCharts] = useState([]);
   const [status, setStatus] = useState({});
   const [signerAddress, setSignerAddress] = useState({});
@@ -68,6 +68,12 @@ export default function Gallery() {
 
   const mintNFT = async (tokenId) => {
     // setIsProcessing(true);
+    const numAccounts = await provider.listAccounts();
+
+    if (numAccounts.length === 0) {
+      console.log("Calling connect wallet");
+      await connectWallet();
+    }
     try {
       const { ethereum } = window;
 
@@ -165,7 +171,10 @@ export default function Gallery() {
 
   useEffect(async () => {
     await getChartMetadata();
-    setSignerAddress(await signer.getAddress());
+    // if (signer.provider._address) {
+    //   setSignerAddress(await signer.getAddress());
+    // }
+    // setSignerAddress(await signer.getAddress());
   }, []);
 
   return (
