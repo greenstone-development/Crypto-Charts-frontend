@@ -74,3 +74,6 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 <p align="center">
     <img src="./arch.png" width="325" height="250">
 </p>
+<p align="center">
+    <img src="./output/0.png" width="325" height="250">
+</p>
